@@ -21,7 +21,7 @@ rm(list = ls())
 ### Outputs ###
 # Write bias, MSE, coverage, and inclusion probabilities to separate text files.
 
-run_sim = function(NSIM=5000, nMCMC=10000, BI=1000, J=50, beta.tilde.true, beta.true, alpha.true, string, case, scen, label) {
+run_sim = function(NSIM=5000, nMCMC=10000, BI=1000, J=50, beta.tilde.true, beta.true, alpha.true, string, case, scen, label, seed) {
   setwd("/home/normington/Paper 2/PosteriorSimResults")
   require(mvtnorm)
   
@@ -347,23 +347,39 @@ beta.true = c(1, 1, 0, 1, 0, 1, 0, 1, 0)
 cases_matrix = cbind(rep(1:8, each = 4), rep(5:8, 8))
 label_vec = rep(paste0("X", 1:8), each = 4)
 
-string0 = "Test_Run"
-n.cores = 16
+string0 = "Test_Run_Table2"
+n.cores = 11
+seeds = c(2019, 1992, 2018, 37, 777, 337, 554, 
+          654, 2014, 89, 84)
+
 cl = makeCluster(n.cores)
 registerDoParallel(cl)
-foreach(i=1:16) %dopar% {
-  run_sim(NSIM = 5000, nMCMC = 5000, BI = 500, J=50, beta.tilde.true = beta.tilde.true, 
+foreach(i=1:n.cores) %dopar% {
+  run_sim(NSIM = 5000, nMCMC = 10000, BI = 1000, J=50, beta.tilde.true = beta.tilde.true, 
                beta.true = beta.true, alpha.true = alpha.true, string = string0,
-               case = cases_matrix[i,1], scen = cases_matrix[i,2], label = label_vec[i])
+               case = cases_matrix[i,1], scen = cases_matrix[i,2], label = label_vec[i], 
+               seed = seeds[i])
 }
 stopCluster(cl) 
 
 cl = makeCluster(n.cores)
 registerDoParallel(cl)
-foreach(i=17:32) %dopar% {
-  run_sim(NSIM = 5000, nMCMC = 5000, BI = 500, J=50, beta.tilde.true = beta.tilde.true, 
+foreach(i=(n.cores+1):(2*n.cores)) %dopar% {
+  run_sim(NSIM = 5000, nMCMC = 10000, BI = 1000, J=50, beta.tilde.true = beta.tilde.true, 
           beta.true = beta.true, alpha.true = alpha.true, string = string0,
-          case = cases_matrix[i,1], scen = cases_matrix[i,2], label = label_vec[i])
+          case = cases_matrix[i,1], scen = cases_matrix[i,2], label = label_vec[i],
+          seed = seeds[i])
+}
+stopCluster(cl) 
+
+n.cores = 10
+cl = makeCluster(n.cores)
+registerDoParallel(cl)
+foreach(i=23:32) %dopar% {
+  run_sim(NSIM = 5000, nMCMC = 10000, BI = 1000, J=50, beta.tilde.true = beta.tilde.true, 
+          beta.true = beta.true, alpha.true = alpha.true, string = string0,
+          case = cases_matrix[i,1], scen = cases_matrix[i,2], label = label_vec[i],
+          seed = seeds[i])
 }
 stopCluster(cl) 
 
