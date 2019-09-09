@@ -58,8 +58,8 @@ run_sim = function(NSIM=5000, nMCMC=10000, BI=1000, J=50, beta.tilde.true, beta.
     ##################
     X.case = rnorm(J)
     Trt =  rnorm(J, alpha.true[case]*X.case)
-    mu = rnorm(J, beta.tilde.true[case+1]*X.case)
-    mu.diff = rnorm(J, beta.true[1]*Trt + beta.true[case+1]*X.case)
+    mu = rnorm(J, beta.tilde.true[case+2]*X.case)
+    mu.diff = rnorm(J, beta.true[2]*Trt + beta.true[case+2]*X.case)
     for(j in 1:J) {
       Y.pre[[j]] = rnorm(n.pre[j], mu[j])
       Y.post[[j]] = rnorm(n.post[j], mu[j] + mu.diff[j])
@@ -332,30 +332,32 @@ run_sim = function(NSIM=5000, nMCMC=10000, BI=1000, J=50, beta.tilde.true, beta.
     label2 = paste0(label, "Scen", scen)
     
     # Write Bias, MSE, and Coverage
-    write.table(t(betaHat[1] - beta.true[1]), file = paste0("bias", label2, string, ".txt"), append = TRUE, col.names = FALSE, row.names = FALSE)
-    write.table(t((betaHat[1] - beta.true[1])^2), file = paste0("MSE", label2, string, ".txt"), append = TRUE, col.names = FALSE, row.names = FALSE)
-    CI = quantile(beta[(BI+1):nMCMC,1], probs = c(.025, .975))
-    write.table(ifelse(CI[1] < beta.true[1] & beta.true[1] < CI[2], 1, 0), file = paste0("Coverage", label2, string, ".txt"), append = TRUE, col.names = FALSE, row.names = FALSE)
+    write.table(t(betaHat[2] - beta.true[2]), file = paste0("bias", label2, string, ".txt"), append = TRUE, col.names = FALSE, row.names = FALSE)
+    write.table(t((betaHat[2] - beta.true[2])^2), file = paste0("MSE", label2, string, ".txt"), append = TRUE, col.names = FALSE, row.names = FALSE)
+    CI = quantile(beta[(BI+1):nMCMC,2], probs = c(.025, .975))
+    write.table(ifelse(CI[1] < beta.true[2] & beta.true[2] < CI[2], 1, 0), file = paste0("Coverage", label2, string, ".txt"), append = TRUE, col.names = FALSE, row.names = FALSE)
   }
 }
 
-alpha.true = c(rep(1, 4), rep(0, 4))
-beta.tilde.true = c(0, 1, 1, 0, 0, 1, 1, 0, 0)
-beta.true = c(1, 1, 0, 1, 0, 1, 0, 1, 0)
+# True values for parameters; each include an intercept = 0.
+alpha.true = c(0, rep(1, 4), rep(0, 4))
+beta.tilde.true = c(0, 0, 1, 1, 0, 0, 1, 1, 0, 0)
+beta.true = c(0, 1, 1, 0, 1, 0, 1, 0, 1, 0)
 
 # Combine cases in a matrix.
 cases_matrix = cbind(rep(1:8, each = 4), rep(5:8, 8))
 label_vec = rep(paste0("X", 1:8), each = 4)
 
-string0 = "Test_Run_Table2"
-n.cores = 11
+string0 = "Test_Sep9_v2"
+n.cores = 16
 seeds = c(2019, 1992, 2018, 37, 777, 337, 554, 
-          654, 2014, 89, 84)
+          654, 2014, 89, 84, 87, 63, 222, 
+          23, 32)
 
 cl = makeCluster(n.cores)
 registerDoParallel(cl)
 foreach(i=1:n.cores) %dopar% {
-  run_sim(NSIM = 5000, nMCMC = 10000, BI = 1000, J=50, beta.tilde.true = beta.tilde.true, 
+  run_sim(NSIM = 10, nMCMC = 5000, BI = 500, J=50, beta.tilde.true = beta.tilde.true, 
                beta.true = beta.true, alpha.true = alpha.true, string = string0,
                case = cases_matrix[i,1], scen = cases_matrix[i,2], label = label_vec[i], 
                seed = seeds[i])
