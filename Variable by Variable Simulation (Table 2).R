@@ -368,7 +368,7 @@ foreach(i=(n.cores+1):(2*n.cores)) %dopar% {
   run_sim(NSIM = 5000, nMCMC = 10000, BI = 1000, J=50, beta.tilde.true = beta.tilde.true, 
           beta.true = beta.true, alpha.true = alpha.true, string = string0,
           case = cases_matrix[i,1], scen = cases_matrix[i,2], label = label_vec[i],
-          seed = seeds[i])
+          seed = seeds[i]-n.cores)
 }
 stopCluster(cl) 
 
@@ -379,7 +379,7 @@ foreach(i=23:32) %dopar% {
   run_sim(NSIM = 5000, nMCMC = 10000, BI = 1000, J=50, beta.tilde.true = beta.tilde.true, 
           beta.true = beta.true, alpha.true = alpha.true, string = string0,
           case = cases_matrix[i,1], scen = cases_matrix[i,2], label = label_vec[i],
-          seed = seeds[i])
+          seed = seeds[i]-2*n.cores)
 }
 stopCluster(cl) 
 
