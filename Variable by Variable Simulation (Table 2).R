@@ -1,7 +1,7 @@
 ################################################################
 ##### Code to produce Table 2 in "Bayesian variable selection 
 ##### in hierarchical difference-in-differences models"
-##### Submitted to Biostatistics, September 2019
+##### Submitted to Biometrics, October 2019
 ################################################################
 rm(list = ls())
 
