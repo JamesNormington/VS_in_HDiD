@@ -1,5 +1,5 @@
 ################################################################
-##### Code to produce Tables 3-6 in "Bayesian variable selection 
+##### Code to produce Tables 4 and 5 in "Bayesian variable selection 
 ##### in hierarchical difference-in-differences models"
 ##### Submitted to Biometrics, September 2019
 ################################################################
@@ -739,7 +739,7 @@ for(J in c(50, 100)) {
   inclusionSufficient = round(colMeans(read.table(paste0("inclusionSufficient", string, ".txt"))), 3)
   inclusionEfficient = round(colMeans(read.table(paste0("inclusionEfficient", string, ".txt"))), 3)
   
-  ## Tables 3 and 5
+  ## Table 3
   print(round(c(biasBetaFull, biasBetaSeparate, biasBetaShared, biasBetaSufficient, biasBetaEfficient, biasBetaNull), 4))
   print(round(c(biasMoEFull, biasMoESeparate, biasMoEShared, biasMoESufficient, biasMoEEfficient, biasMoENull), 4))
   
@@ -756,6 +756,6 @@ for(J in c(50, 100)) {
   print(c(n.varsTildeSeparateMoE, n.varsTildeSharedMoE, n.varsTildeSufficientMoE, n.varsTildeEfficientMoE))
   
   
-  ## Tables 4 and 6
+  ## Table 4
   print(round(rbind(inclusionSeparate, inclusionShared, inclusionSufficient, inclusionEfficient), 4))
 }
