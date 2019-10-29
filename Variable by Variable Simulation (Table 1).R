@@ -1,5 +1,5 @@
 ################################################################
-##### Code to produce Table 2 in "Bayesian variable selection 
+##### Code to produce Table 1 in "Bayesian variable selection 
 ##### in hierarchical difference-in-differences models"
 ##### Submitted to Biometrics, October 2019
 ################################################################
